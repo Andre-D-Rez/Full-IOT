@@ -1,0 +1,63 @@
+1. Sensores Analógicos (Potenciômetro e Fotoresistor/LDR)
+O ESP32-S3 possui dois ADCs (Conversores Analógico-Digitais).
+Melhor escolha: Use os pinos do ADC1. Eles são os mais estáveis e garantem leitura limpa mesmo com o Wi-Fi ligado.
+Segunda escolha: Pinos do ADC2 (No S3 eles funcionam com Wi-Fi, mas o ADC1 é preferível).
+Melhores Pinos (ADC1):
+GPIO 1 até GPIO 10 (São os melhores absolutos para analógico).
+Escolha dois desta lista:
+GPIO 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+
+2. Sensor Ultrassônico (Trigger e Echo)
+O Ultrassônico é digital. O Trigger é saída e o Echo é entrada.
+Atenção: O pino Echo do sensor HC-SR04 envia 5V. O ESP32-S3 trabalha com 3.3V. Embora funcione direto muitas vezes, o ideal é usar um divisor de tensão (resistores) no Echo. Se não tiver, use pinos que não sejam vitais (como ADC).
+Melhores Pinos (GPIOs Gerais Seguros): Qualquer pino que não seja analógico (para economizar os ADCs) e não seja de boot.
+GPIO 10, 11, 12, 13, 14
+GPIO 15, 16, 17, 18
+GPIO 21
+GPIO 38, 39, 40, 41, 42 (Se sua placa expor esses pinos)
+
+3. Atuadores (LED RGB e Buzzer)
+Estes precisam de saídas digitais com capacidade de PWM. No ESP32-S3, praticamente todos os pinos GPIO podem gerar PWM.
+Recomendação: Use os pinos "restantes" depois de escolher os analógicos. Evite usar os pinos 1-10 aqui para guardá-los para o Potenciômetro e LDR.
+Melhores Pinos:
+GPIO 10, 11, 12, 13, 14, 15, 16, 17, 18, 21, 38, 39, 40, 41, 42, 47, 48.
+
+4. Botão (Push Button)
+Botões digitais. O ideal é usar pinos que tenham Resistor de Pull-up interno (quase todos têm) ou o pino de BOOT.
+O "Pulo do Gato": O pino GPIO 0 é o pino do botão "BOOT" da placa. Você pode usar ele como seu botão se quiser economizar solda (ele já está na placa!).
+Outros pinos excelentes: Qualquer pino da lista de GPIOs gerais acima.
+
+5. Melhores Pinos para o PIR (Digital Input)
+Você quer pinos que sejam "Input" seguros e que, idealmente, permitam acordar o ESP32 do modo "Deep Sleep" (caso você queira economizar bateria no futuro).
+GPIO 17 e 18: São excelentes escolhas. Ficam logo após os pinos que sugeri para os LEDs, facilitando a organização dos fios na protoboard.
+GPIO 21: Um pino clássico de entrada/saída, muito seguro.
+GPIO 1, 2 ou 3: Se você não usou estes para analógicos, eles são ótimos sensores digitais também.
+GPIO 38 a 48: Se sua placa tiver esses pinos expostos, são perfeitos pois não interferem em nada do sistema básico.
+
+⚠️ PINOS PARA EVITAR (ZONA DE PERIGO) ⚠️
+No ESP32-S3, evite conectar coisas nestes pinos a menos que saiba exatamente o que está fazendo, pois eles podem impedir o upload do código ou o funcionamento da placa:
+
+GPIO 0: (Strapping Pin) Se estiver conectado ao GND durante a inicialização, a placa entra em modo de download e não roda seu código. Use para botão apenas se o botão não ficar pressionado ao ligar a energia.
+GPIO 45 e 46: (Strapping Pins) Controlam a voltagem da memória Flash. Não ligue nada que puxe tensão aqui na inicialização.
+GPIO 19 e 20: São os pinos do USB Nativo (JTAG/Serial). Se você usar esses pinos, pode perder a capacidade de carregar código via USB ou usar o Serial Monitor nativo.
+GPIO 26 até 32: Geralmente conectados à memória Flash/PSRAM interna. A maioria das placas DevKit nem expõe esses pinos, mas se expuser, não use.
+GPIO 33 a 37: Em módulos S3 com memória Octal (comuns), esses pinos são usados pela memória. Evite.
+
+Para facilitar sua vida e evitar conflitos, aqui está uma sugestão de mapa completo para o seu ESP32-S3, organizando tudo sequencialmente para facilitar a fiação:
+Lado Analógico (ADC1 - Melhor precisão):
+Potenciômetro: GPIO 4
+Fotoresistor (LDR): GPIO 5
+Lado Digital (Entradas/Sensores):
+Botão: GPIO 6 (ou use o GPIO 0 BOOT da placa)
+Ultrassônico Trigger: GPIO 7
+Ultrassônico Echo: GPIO 15 (Cuidado: Use divisor de tensão se o sensor for 5V)
+Sensor PIR: GPIO 16
+Lado Digital (Saídas/Atuadores):
+Buzzer: GPIO 17
+LED Vermelho: GPIO 18
+LED Verde: GPIO 8 (Nota: GPIO 8 é seguro no S3, mas verifique se sua placa expõe)
+LED Azul: GPIO 3
+
+Observação sobre o ESP32-S3: Diferente do ESP32 antigo, a numeração dos pinos no S3 pode ser um pouco "salteada" dependendo do fabricante da placa (Wemos, Espressif, LilyGo).
+Se você quiser uma lista "genérica" que funciona em quase qualquer ESP32-S3 DevKit: Use a sequência: 4, 5, 6, 7, 15, 16, 17, 18. São os pinos mais seguros e comuns.
+Esta configuração deixa livre os pinos de USB (19/20) e os pinos críticos de Boot/Flash, além de usar o ADC1 correto para os sensores analógicos.
