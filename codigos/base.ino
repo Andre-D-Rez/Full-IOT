@@ -1,4 +1,4 @@
-# Full-IOT
+const int ledPin = 2; // Define pinos no ESP
 
 /* INFORMAÇÕES IMPORTANTES:
 No Arduino IDE:
@@ -22,3 +22,21 @@ Analogica: 30, 31, 32, 33, 34, 35
 Digital: Qualquer outra
 Placa ESP32 Normal: ESP32 DEVKITV1 ou DOITY alguma coisa
 */
+
+
+void setup() {
+  Serial.begin(115200); // Obrigatorio
+  pinMode(ledPin, OUTPUT); // INPUT para leitores, OUTPUT para saidas
+  
+  digitalRead(Componente); // Leitura de componentes digitais
+  digitalWrite(ledPin, LOW); // Escrita para componentes digitais
+  analogRead(Componente); // Leitura de componentes analogicos
+  analogWrite(Componente, Valor); // Escrita para componentes analogicos
+
+  Serial.print("Hello world!");
+}
+
+void loop() {
+  delay(2000);
+  Serial.println("Hello world!");
+}
